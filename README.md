@@ -1,10 +1,10 @@
-# MettaAgents Framework
+# ECAN Agents Framework in Metta
 
-A powerful and flexible agent-based system implemented in MeTTa, designed for cognitive architectures and distributed AI systems.
+A poc for agent-based system implemented in MeTTa.
 
 ## Overview
 
-MettaAgents is a framework that implements various cognitive agents using the MeTTa language. The system is built on a robust architecture that allows agents to operate independently or in parallel, with sophisticated mechanisms for message passing and state management.
+This is a simple way of implementing a cognitive controller for the ECAN Agents. The state is preserved until the system got stopped.
 
 ## Core Components
 
@@ -16,24 +16,25 @@ MettaAgents is a framework that implements various cognitive agents using the Me
 
 ### Available Agents
 
+## The below Agents are not implemented in the repository. I just listed them to show what ECAN Agents are and what they do
+
 1. **Importance Diffusion Agents**
-   - `AFImportanceDiffusionAgent`: Implements attention flow-based importance diffusion
-   - `WAImportanceDiffusionAgent`: Handles weighted attention-based importance diffusion
+   - `AFImportanceDiffusionAgent`: Implements attentional-focus importance diffusion
+   - `WAImportanceDiffusionAgent`: Handles Whole Atomspace importance diffusion
 
 2. **Rent Collection Agents**
-   - `AFRentCollectionAgent`: Manages attention flow-based resource allocation
-   - `WARentCollectionAgent`: Handles weighted attention-based resource collection
+   - `AFRentCollectionAgent`: Manages AF Rent collection.
+   - `WARentCollectionAgent`: Manges WA Rent collection
 
 3. **Learning and Memory Agents**
-   - `HebbianCreationAgent`: Implements Hebbian learning for pattern creation
-   - `HebbianUpdatingAgent`: Manages updates to Hebbian learning patterns
+   - `HebbianCreationAgent`: Manages Hebbian Link creation between atoms.
+   - `HebbianUpdatingAgent`: Manages updates to Hebbian link weights
    - `ForgettingAgent`: Handles memory decay and cleanup operations
 
 ## Key Features
 
 - **Parallel Execution**: Agents can run concurrently using the ParallelScheduler
-- **Message Queue System**: Built-in message passing infrastructure for inter-agent communication
-- **Event Handling**: Robust event processing system for reactive behaviors
+- **Retaining State**: State gets preserved through out the execution of the agents until it get stoped.
 - **Flexible Integration**: Supports both MeTTa and Python-based agent implementations
 
 ## Usage
@@ -43,8 +44,8 @@ MettaAgents is a framework that implements various cognitive agents using the Me
 Agents can be created either through MeTTa scripts or Python classes:
 
 ```metta
-;; MeTTa agent example
-!(bind! agent (new-agent))
+!(import! &self agents)
+!((create-agent ./agents/tests/agent.metta) (g 3))
 ```
 
 ### Registering with Scheduler
@@ -57,23 +58,28 @@ scheduler.register_agent("agent_id", agent_creator)
 ### Running Agents
 
 ```python
-# Run a single agent
-scheduler.execute_agent("agent_id")
 
 # Run all agents in parallel
-scheduler.run_all_agents_parallel()
+python3 main.py
+```
+
+### What you can enter in the command
+
+```
+stimulate or stop
 ```
 
 ## Architecture Details
 
 ### Agent Lifecycle
 
-1. **Initialization**: Agents are initialized with optional path, atoms, and include paths
-2. **Registration**: Agents are registered with the scheduler
-3. **Execution**: Agents process messages and handle events in their main loop
-4. **Termination**: Agents can be gracefully stopped using the stop method
+1. **Initialization**
+2. **Registration**
+3. **Execution**
+4. **Termination**
 
-### Message Processing
+### Message Processing (This is from the agent_base which I directly imported from the hyperon experimental repostory)
+
 
 Agents use a queue-based system for message processing:
 - Messages are added to the queue using the `input` method
@@ -89,4 +95,4 @@ Contributions are welcome! Please follow these steps:
 
 ## License
 
-[Insert License Information]
+
