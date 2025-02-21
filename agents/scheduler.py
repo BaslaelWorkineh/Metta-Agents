@@ -28,7 +28,7 @@ class ParallelScheduler:
         
         return self.agent_instances[agent_id]
 
-    def stimulate_forever(self):
+    def run_continuously(self):
         """ Run all agents continuously in parallel without stopping """
         if not self.agent_creators:
             print("No agents registered!")

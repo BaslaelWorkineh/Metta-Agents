@@ -27,15 +27,11 @@ def main():
         lambda: AgentObject(path="./agents/mettaAgents/HebbianUpdatingAgent.metta"))
 
     print("\nAgent System Ready!")
-    print("Available commands:")
-    print("  stimulate - Run all agents once")
-    print("  stop      - Exit the system")
-    print("\nWaiting for commands...")
 
     while True:
         try:
             print("\nRunning agents in continuous mode. Press Ctrl+C to stop.")
-            scheduler.stimulate_forever()
+            scheduler.run_continuously()
 
         except KeyboardInterrupt:
             print("\nReceived interrupt signal. Stopping system...")
