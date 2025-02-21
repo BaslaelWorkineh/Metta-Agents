@@ -34,16 +34,9 @@ def main():
 
     while True:
         try:
-            command = input("\nEnter command (stimulate/stop): ").strip().lower()
-            
-            if command == "stimulate":
-                scheduler.stimulate()
-                print("\nWaiting for next command...")
-            elif command == "stop":
-                print("\nStopping system...")
-                break
-            else:
-                print("\nUnknown command. Use 'stimulate' or 'stop'")
+            print("\nRunning agents in continuous mode. Press Ctrl+C to stop.")
+            scheduler.stimulate_forever()
+
         except KeyboardInterrupt:
             print("\nReceived interrupt signal. Stopping system...")
             break
