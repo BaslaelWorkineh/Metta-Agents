@@ -70,10 +70,9 @@ class AgentObject:
             agent = agent_atom.get_object().content
         else:
             agent = cls(*args)
-        if metta is not None:
-            if hasattr(agent, '_metta') and agent._metta is not None:
-                raise RuntimeError(f"MeTTa is already defined for {agent}")
-            agent._metta = metta
+        if hasattr(agent, '_metta') and agent._metta is not None:
+            raise RuntimeError(f"MeTTa is already defined for {agent}")
+        agent._metta = metta
         agent._unwrap = unwrap
         return [OperationAtom(cls.name(),
             lambda *agent_args: agent.__metta_call__(*agent_args), unwrap=False)]
@@ -95,7 +94,8 @@ class AgentObject:
             return str(val.get_object().content)
         return repr(val)
 
-    def __init__(self, path=None, atoms={}, include_paths=None, code=None):
+    def __init__(self, metta=None, path=None, atoms={}, include_paths=None, code=None):
+        self._metta = metta
         if path is None and code is None:
             # purely Python agent
             return
@@ -112,7 +112,11 @@ class AgentObject:
         self._atoms = atoms
         self._include_paths = include_paths
         self._context_space = None
-        self._create_metta()
+        # Initialize Metta if not already initialized
+        if self._metta is None:
+            self._create_metta()
+        else:
+            self._load_code()
 
     def _create_metta(self):
         if self._code is None:
@@ -126,6 +130,8 @@ class AgentObject:
         # which are not inherited from the caller agent. Thus,
         # the caller space is not directly accessible as a context,
         # except the case when _metta is set via get_agent_atom with parent MeTTa
+        if self._metta:
+            return
         if self._include_paths is not None:
             env_builder = Environment.custom_env(include_paths=self._include_paths)
             metta = MeTTa(env_builder=env_builder)
@@ -137,8 +143,9 @@ class AgentObject:
         self._metta = metta
 
     def _load_code(self):
-        return self._metta.run(self._code) if isinstance(self._code, str) else \
-            self._metta.space().add_atom(self._code)
+        if self._code:
+            self._metta.run(self._code) if isinstance(self._code, str) else \
+                self._metta.space().add_atom(self._code)
 
     def __call__(self, atom):
         if self._unwrap or self._metta is None:
@@ -177,8 +184,8 @@ class AgentObject:
 
         print(f"Running agent: {self.name()} from {self._code[:50]}...")  # Show first 50 chars of code
         try:
-            result = self._metta.run(self._code)  # Execute the script
-            print(f"Execution result for {self.name()}: {result}")
+            results = self._metta.run(self._code)
+            print(f"Execution result for {self.name()}: {results}")
         except Exception as e:
             print(f"Error executing agent {self.name()}: {e}")
 
